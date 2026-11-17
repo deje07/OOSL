@@ -20,6 +20,8 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - name: Install pinned Android SDK packages
         run: sdkmanager 'platforms;android-33' 'build-tools;30.0.3'
       - name: Set up JDK 11 for the launcher build
