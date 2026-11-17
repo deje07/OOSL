@@ -1,3 +1,42 @@
+# OOSL
+
+Open-source Android launcher targeting OnePlus 6T (`fajita`), Jaguar / Android 11,
+as an ordinary third-party Home app. Based on Neo Launcher 0.9.3 at
+`022833f7df33d01e1a64c17d928a812e88555e63`.
+
+- Application ID: `hu.szecsi.oosl` (including debug builds)
+- Application title: **OOSL**
+- Development branch: `oosl`
+- Current signing: upstream public **debug key only**; no production signing configured
+- System Recents stays with the ROM launcher; QuickSwitch is not required
+
+The first milestone is an offline left-page Shelf with persistent Notes.
+Shelf implementation has not started. Native Steps, Parking Location and
+OxygenOS 10 visual fidelity are later milestones. This is an independent project.
+
+## Build the debug APK
+
+Use JDK 11, Android SDK Platform 33 and Build-Tools 30.0.3. The wrapper provides
+Gradle 7.5.1. Set `JAVA_HOME` and `ANDROID_HOME` for your local installations, then:
+
+```sh
+bash ./gradlew assembleAospWithQuickstepOmegaDebug
+```
+
+The APK is under `build/outputs/apk/aospWithQuickstepOmega/debug/`.
+The `withQuickstep` source variant is required by the inherited launcher classes;
+building it does not make OOSL the system Recents provider.
+Only the debug build is currently supported. Its key is public and is not suitable
+for production distribution. Existing Neo packages can remain installed separately.
+
+## Upstream credits and licensing
+
+OOSL retains Neo/Omega, Lawnchair and AOSP source notices and the upstream license.
+The original Neo Launcher README follows for attribution and upstream information;
+its download links refer to Neo, not OOSL.
+
+---
+
 # Neo Launcher <img title="" src="./fastlane/metadata/android/en-US/images/icon.png" align="left" width="64">
 
 **Free and Open Source Launcher**

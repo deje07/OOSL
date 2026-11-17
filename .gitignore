@@ -21,3 +21,9 @@ build/
 *.hprof
 /.settings/org.eclipse.buildship.core.prefs
 /.vscode/settings.json
+
+# Local qualification artifacts and workspace metadata
+/artifacts/
+/.agents/
+/.codex/
+/.aws/

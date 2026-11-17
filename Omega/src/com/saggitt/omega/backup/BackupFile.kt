@@ -330,7 +330,7 @@ class BackupFile(context: Context, val uri: Uri) {
                 ?.map {
                     FileProvider.getUriForFile(
                         context,
-                        "com.saggitt.omega.fileprovider",
+                        "${context.packageName}.fileprovider",
                         it
                     )
                 }

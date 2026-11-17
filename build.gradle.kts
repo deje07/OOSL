@@ -41,7 +41,7 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 32
-        applicationId = "com.saggitt.omega"
+        applicationId = "hu.szecsi.oosl"
 
         versionName = name
         versionCode = code
@@ -55,7 +55,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "NeoLauncher_v${variant.versionName}_build_${variant.versionCode}.apk"
+                "OOSL_v${variant.versionName}_${variant.buildType.name}.apk"
         }
         variant.resValue(
             "string",
@@ -67,7 +67,6 @@ android {
     buildTypes {
         named("debug") {
             isMinifyEnabled = false
-            applicationIdSuffix = ".debug"
             manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_debug"
             manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round_debug"
             signingConfig = signingConfigs.getByName("debug")
@@ -89,12 +88,6 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-        create("primary") {
             storeFile = file("debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
@@ -136,7 +129,7 @@ android {
     productFlavors {
         create("aosp") {
             dimension = "app"
-            applicationId = "com.saggitt.omega"
+            applicationId = "hu.szecsi.oosl"
             testApplicationId = "com.android.launcher3.tests"
         }
 

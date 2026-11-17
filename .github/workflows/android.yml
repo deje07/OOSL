@@ -1,72 +1,36 @@
-name: Omega CI
+name: OOSL debug
 on:
   push:
-    branches: [ A-12 ]
+    branches: [oosl]
   pull_request:
-    branches: [ A-12 ]
+    branches: [oosl]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-#  send-start-notification:
-  #    runs-on: ubuntu-latest
-  #    continue-on-error: true
-  #    if: github.event_name == 'push'
-  #    steps:
-  #      - name: Send start notification
-  #        uses: appleboy/telegram-action@v0.1.1
-  #        with:
-  #          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-  #          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-  #          message: New push to “Omega Launcher”. Building debug APK…
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2.3.4
-      - name: set up JDK 11
-        uses: actions/setup-java@v1.4.3
+      - uses: actions/checkout@v4
+      - name: Set up Java for SDK tools
+        uses: actions/setup-java@v4
         with:
-          java-version: 1.11
-      - uses: actions/cache@v2.1.4
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install pinned Android SDK packages
+        run: sdkmanager 'platforms;android-33' 'build-tools;30.0.3'
+      - name: Set up JDK 11 for the launcher build
+        uses: actions/setup-java@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Compile with Gradle
-        run: ./gradlew assembleAospWithQuickstepOmega
-
-      - name: Save name of our Artifact
-        id: set-result-artifact
-        run: |
-          ARTIFACT_PATHNAME_APK=$(ls build/outputs/apk/aospWithQuickstepOmega/debug/*.apk | head -n 1)
-          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
-          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
-          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
-
-      - uses: actions/upload-artifact@v2
+          distribution: temurin
+          java-version: '11'
+      - name: Build debug APK
+        run: bash ./gradlew assembleAospWithQuickstepOmegaDebug --console=plain
+      - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME_APK }}
-          path: ${{ env.ARTIFACT_PATHNAME_APK }}
-
-#  send-end-notification:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    if: github.event_name == 'push'
-#    steps:
-#      - name: Download artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: ${{ env.ARTIFACT_NAME_APK }}
-#          path: ${{ env.ARTIFACT_PATHNAME_APK }}
-#      - uses: technote-space/workflow-conclusion-action@v2.1.5
-#      - name: Send notification
-#        uses: appleboy/telegram-action@v0.1.1
-#        with:
-#          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-#          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-#          document: artifacts/debug-apk/**.apk
-#          message: Build finished with status “${{ env.WORKFLOW_CONCLUSION }}”. Uploading APK if available…
+          name: OOSL-debug
+          path: build/outputs/apk/aospWithQuickstepOmega/debug/*.apk
+          if-no-files-found: error
